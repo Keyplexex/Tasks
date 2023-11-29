@@ -1,5 +1,3 @@
-from bisect import bisect_right
-
 n = int(input())
 mas = []
 
@@ -27,9 +25,9 @@ if n == 1:
             print(0)
 
 else:
+    ans = []
     for i in range(k):
         x, neig = map(int, input().split())
-        l = positions
 
         if x < positions[0]:
             ans.append(sum(energy[:neig]))
@@ -38,28 +36,22 @@ else:
             ans.append(sum(energy[-neig:]))
 
         else:
-            if x not in positions:
-                place = bisect_right(l, x)
-                l = l[:place] + [x] + l[place:]
-                neig += 1
+            left = 0
+            right = len(positions) - 1
 
-            else:
-                place = l.index(x)
+            while right - left >= neig:
+                if abs(positions[left] - x) > abs(positions[right] - x):
+                    left += 1
+                else:
+                    right -= 1
 
-            lst = []
-            for e in l:
-                lst.append((abs(e - x), e))
-
-            lst.sort()
-            res = [e[1] for e in lst[:neig + 1]]
-
-            if abs(x - res[-1]) == abs(x - res[-2]):
+            if (right != len(positions)-1) and (abs(positions[left] - x) == abs(positions[right+1] - x)):
                 ans.append(0)
+            elif (left != 0) and (abs(positions[left-1] - x) == abs(positions[right] - x)):
+                ans.append(0)
+
             else:
-                if x not in positions:
-                    res.remove(x)
-                maxi = max(res[:-1])
-                mini = min(res[:-1])
-                ans.append(sum(energy[positions.index(mini):positions.index(maxi)+1]))
+                ans.append(sum(energy[left: right+1]))
+
     for i in ans:
         print(i)
