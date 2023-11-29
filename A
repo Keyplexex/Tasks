@@ -25,33 +25,34 @@ if n == 1:
             print(0)
 
 else:
-    ans = []
     for i in range(k):
         x, neig = map(int, input().split())
 
         if x < positions[0]:
-            ans.append(sum(energy[:neig]))
+            print(sum(energy[:neig]))
 
         elif x > positions[-1]:
-            ans.append(sum(energy[-neig:]))
+            print(sum(energy[-neig:]))
 
         else:
-            left = 0
-            right = len(positions) - 1
-
-            while right - left >= neig:
-                if abs(positions[left] - x) > abs(positions[right] - x):
-                    left += 1
-                else:
-                    right -= 1
-
-            if (right != len(positions)-1) and (abs(positions[left] - x) == abs(positions[right+1] - x)):
-                ans.append(0)
-            elif (left != 0) and (abs(positions[left-1] - x) == abs(positions[right] - x)):
-                ans.append(0)
-
+            if len(positions) == neig:
+                print(sum(energy))
             else:
-                ans.append(sum(energy[left: right+1]))
+                l, r = 0, n - neig
+                mid = 0
+                while l < r:
 
-    for i in ans:
-        print(i)
+                    mid = (l + r) // 2
+
+                    if (x - positions[mid]) > (positions[mid + neig] - x):
+                        l = mid + 1
+
+                    else:
+                        r = mid
+
+                if (l+neig != len(positions)) and (abs(positions[l+neig] - x) == abs(positions[l] - x)):
+                    print(0)
+                elif (l != 0) and (abs(positions[l - 1] - x) == abs(positions[l+neig-1] - x)):
+                    print(0)
+                else:
+                    print(sum(energy[l: l+neig]))
